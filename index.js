@@ -11,7 +11,7 @@ import { loadGames } from './api.js' // the . is the directory that you are in o
 //MiddleWare
  
 function checkAuth (req, res, next){
-    if (req.headers.authorization.split(' ')[1] !== process.env.TOKEN) // if the request is different than the token 
+    if (req.headers.authorization?.split(' ')[1] !== process.env.TOKEN) // if the request is different than the token 
     //we are taking the token and split with a space because it's bearer : token and we chose the first in the array cos bearer is one and token is another due to not being joined together 
         return res.status(401).send('Unauthorized') // return 401 if it's not unauthorized 
 
