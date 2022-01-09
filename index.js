@@ -25,8 +25,8 @@ app.get('/', (req, res) => {
 })
 
 app.get('/games', checkAuth, async (req, res) => { // it has to be in async 
-    const { search } = req.query // to request the search that is in the query - if they don't include the ?search it's undefined, if it's undefined we are still sending it to loadGames
-    res.json(await loadGames(search))   
+    const { id, search } = req.query // to request the search that is in the query - if they don't include the ?search it's undefined, if it's undefined we are still sending it to loadGames
+    res.json(await loadGames(id, search))   
 })
 
 app.listen(port, (req, res) => {
