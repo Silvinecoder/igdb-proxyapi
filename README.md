@@ -60,13 +60,13 @@ We are first taking the token and spliting it with a space to pick the token and
 
 ``` !== process.env.TOKEN) ``` 
 
-This means that if the token is different than the token: 
+This means that if the token is different than the token, then: 
 
 ``` 
 return res.status(401).send('Unauthorized')
 ``` 
 
-Return a status of 401 if it's unauthorized 
+Return a status of 401 and string saying Unauthorized
 
 ```
 app.get('/', (req, res) => {
