@@ -1,6 +1,6 @@
-Index.js File: 
+Index.js file: 
 
-The index.js is the starting point and endpoint, within the endpoint we call the API 
+The Index.js is the starting point and endpoint, within the endpoint we call the API 
 
 We first import Express and env
 
@@ -24,13 +24,15 @@ We have a variable that is initiating a new express
 ```
 const app = express()
 ```
+
 and another variable that either stores the port that you've picked or processes a port 
 
 ```
 const port = process.env.PORT || 3000 
 ```
+
 Import loadGames is self explanatory; it imports the async function from the api.js file. 
-There's is also a ./api.js - . is the directory that you are in, without the . it will try to import loadGames inside the node_modules 
+There's is also a ./api.js - . is the directory that you are in, without the . it will try to find ./api.js inside the node_modules 
 
 ```
 import { loadGames } from './api.js'
@@ -93,11 +95,7 @@ const { id, search } = req.query
 ```
 we are creating two consts called id and called search, this const equals the request.query 
 
-```
-request.query
-```
- Requests the search that is in the query, if the users don't include the ?search it's undefined, but even 
- if it's undefined we are still sending it to loadGames
+Requests the search that is in the query, if the users don't include the ?search it's undefined, but even if it's undefined we are still sending it to loadGames
 
  ```
  app.listen(port, (req, res) => {
