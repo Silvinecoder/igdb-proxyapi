@@ -1,46 +1,46 @@
-Index.js file: 
+**Index.js file:** 
 
-The Index.js is the starting point and endpoint, within the endpoint we call the API 
-
-We first import Express and env
+The Index.js is made of the starting point and the endpoints.
 
 ```
 import express from 'express' 
+
 ```
+We first import Express and dotEnv
 
 ```
 import dotenv from 'dotenv'
 ```
 
-Env variables are secure because they are not tracked by git 
-
-After importing env we add a configuration which loads everything in env, to process.env
+dotEnv is a file to control application environments; my dotEnv includes the tokens and sensitive URL secured by gitignore, which git ... ignores. 
 
 ```
 dotenv.config() 
 ```
-We have a variable that is initiating a new express 
+
+After importing dotenv we add a dotenv.config() which allows you to load a set of configuration options to process.env
 
 ```
 const app = express()
 ```
 
-and another variable that either stores the port that you've picked or processes a port 
+We have a variable that is initiating a new express 
 
 ```
 const port = process.env.PORT || 3000 
 ```
 
-Import loadGames is self explanatory; it imports the async function from the api.js file. 
-There's is also a ./api.js - . is the directory that you are in, without the . it will try to find ./api.js inside the node_modules 
+The const port variable stores the port that you've picked or processes a port from a specific platform service in this case it's Heroku
 
 ```
 import { loadGames } from './api.js'
 ```
 
-MiddleWare
+Import loadGames is self-explanatory; it imports the async function from the api.js file, so we can then use it inside index.js.  
 
-function checkAuth - In this function we are checking if the user has authorization 
+As for the code ./api.js - . is the directory you are in, without the . it will try to find ./api.js inside the node_modules 
+
+**MiddleWare**
 
 ```
 function checkAuth (req, res, next){
@@ -52,35 +52,37 @@ function checkAuth (req, res, next){
 }
 ```
 
+Function checkAuth - In this function we are checking if the user has authorization; this is how it works:
+
 ``` 
 if (req.headers.authorization?.split(' ')[1] 
 ``` 
 
-We are first taking the token and spliting it with a space to pick the token and not the bearer - ``` [1] ``` picks the token
+We are first requesting if the authorization has the token; if it does split it - we split it by dividing the token with ('')/space - this gives us the option of separating the bearer and the token. 
+
+We select the token with ``` [1] ``` 
 
 ``` !== process.env.TOKEN) ``` 
 
-This means that if the token is different than the token, then: 
+This means that if the token is different than the token that the user provided, then: 
 
 ``` 
 return res.status(401).send('Unauthorized')
 ``` 
 
-Return a status of 401 and string saying Unauthorized
+We respond with a status of 401 and a string saying Unauthorized.
 
 ```
 app.get('/', (req, res) => {
     res.send( 'this is home')
 })
 ```
- This creates a directory which is home
- 
+
+app.get routes HTTP GET request to a path specified; in this case, it's '/' 
+
  ```res.send( 'this is home') ```
-Then sends a response called this is home
 
-```app.get```
-get is a HTTP request method which retrives data from that 
-
+Then sends a response string expressing this is home
 
 ```
 app.get('/games', checkAuth, async (req, res) => { 
@@ -88,23 +90,36 @@ app.get('/games', checkAuth, async (req, res) => {
     res.json(await loadGames(id, search))   
 })
 ```
-This creates a directory called /games, it then calls back the checkAuth function and has to be async due to await
+
+for /games, it routes HTTP GET request to a new path called games, then calls the function  checkAuth, and uses code async to be fast and reliable.
 
 ``` 
 const { id, search } = req.query 
 ```
-we are creating two consts called id and called search, this const equals the request.query 
 
-Requests the search that is in the query, if the users don't include the ?search it's undefined, but even if it's undefined we are still sending it to loadGames
+This const creates two conts called id and search. The way this const is built, it's a destructuring assignment that makes it possible to unpack values from arrays, or properties from objects, into distinct variables; which processes the env variables the shows the state of the system environment of our app.
+
+The req.query requests the strings that are found in the url of the search and id.
+
+```
+res.json(await loadGames(id, search)) 
+```
+
+```res.json``` handsets the content-type header to JSON to treat it as a valid JSON object; in this case it's the ?search and ?id 
+
+```await``` pauses the code on this line, calls the ```loadGames``` from api.js and the information stored for ?id= and ?search= - In this case, even if the id and search is undefined, we are still sending this information to loadGames function
 
  ```
  app.listen(port, (req, res) => {
     console.log(`port http://localhost:${port}`)
 })
 ```
-This app function starts a server and listens on port 3000 for connections
 
-Api.js file:
+The final bit of the index.js file is the ```app.listen``` function that listens for the 3000 port we've clarified; it then starts a server and includes a console.log allowing us to copy and paste our local:host on our browser. 
+
+/// Needs revision ///
+
+**Api.js file:**
 
 This is the file that is requesting/get the API from Nuno Gois, and specifies the ID and search 
 
@@ -114,18 +129,18 @@ import axios from 'axios'
 We first import axios 
 
 ```
-async function loadGames (ID, search = '') { 
+async function loadGames (ID = '', search = '') { 
 ``` 
-I've created an async function called loadGames - the function accepts the two parameters ID and search - the search default is empty, but it's functionality searches for specific games - in the url it would appear as ?search=Mario if the user searches for Mario. If the search is also undefined it's empty
+I've created an async function called loadGames. 
 
-The ID is a unique identifier about each specific game; this can include the ratings, company, platform .. etc
+The function accepts the two parameters ID and search; by default, these parameters are empty/undefined until the user triggers the operation and searches for a specific game.  In the URL, the endpoint would look like this if the user searches for Mario: ?search=Mario 
+
+As for the ID its a unique identifier about each game; in our object, it includes the ratings, company, platform .. etc.
 
 ```
  const { API_URL, API_TOKEN } = process.env 
 ```
-This creates two consts called API_URL and API_TOKEN which are destructuring assignment to process.env 
-
-Process.env represents the state of the system environment of our app when it starts
+This creates two conts called API_URL and API_TOKEN. The way this const is built, it's a destructuring assignment that makes it possible to unpack values from arrays, or properties from objects, into distinct variables, which processes the env variables the shows the state of the system environment of our app.
 
 The code above is the same as below: 
 
@@ -139,21 +154,21 @@ if (search)
         search = `?search=${search}` 
 ```
 
-if search has information inside we want it to be ?search= whatever search the user wants, ex: Mario
+if the search has information inside, we want to output in the endpoint as ?search=gameName
 
 ```
 if (ID)
         ID = `?id=${ID}`
 ```
 
-if ID has information inside we want it to be ?id= whatever id the user wants to look at
+if the ID has information inside, we want to output in the endpoint as ?id=informationAboutGame
 
-Our last if function is for authorization and errors
+Our last if function is for Authorization and Errors
 
 ```
  if (!URL || !TOKEN )  throw new Error('missing info') 
 ```
-if the URL and TOKEN is empty or Falsy throw new Error - which means it terminates the process
+if the URL and TOKEN is empty or Falsy terminate the process
 
 The alternative and safer way is to show a console error instead of terminating the process, we do this by: 
 

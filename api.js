@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 
-async function loadGames (ID, search = '') { 
+async function loadGames (ID ='', search = '') { 
 
     const { API_URL, API_TOKEN } = process.env 
 
