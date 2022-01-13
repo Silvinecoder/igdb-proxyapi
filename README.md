@@ -1,6 +1,6 @@
 **Index.js file:** 
 
-The Index.js is made of the starting point and the endpoints.
+The Index.js is made of the startingpoints and the endpoints.
 
 ```
 import express from 'express' 
@@ -52,7 +52,7 @@ function checkAuth (req, res, next){
 }
 ```
 
-Function checkAuth - In this function we are checking if the user has authorization; this is how it works:
+In this function we are checking if the user has authorization; this is how it works:
 
 ``` 
 if (req.headers.authorization?.split(' ')[1] 
@@ -91,7 +91,7 @@ app.get('/games', checkAuth, async (req, res) => {
 })
 ```
 
-for /games, it routes HTTP GET request to a new path called games, then calls the function  checkAuth, and uses code async to be fast and reliable.
+for /games, it routes HTTP GET request to a new path called games, then calls the function checkAuth, and uses code async to be fast and reliable.
 
 ``` 
 const { id, search } = req.query 
@@ -115,31 +115,32 @@ res.json(await loadGames(id, search))
 })
 ```
 
-The final bit of the index.js file is the ```app.listen``` function that listens for the 3000 port we've clarified; it then starts a server and includes a console.log allowing us to copy and paste our local:host on our browser. 
-
-/// Needs revision ///
+The final bit of the index.js file is the ```app.listen``` function that listens for the 3000 port, it then starts a server and a console.log which provides us with the local:host link.
 
 **Api.js file:**
 
-This is the file that is requesting/get the API from Nuno Gois, and specifies the ID and search 
+The api.js file requests the API from Nuno Gois URL for us to use with our ID and Search parameters   
 
 ```
 import axios from 'axios'
 ```
+
 We first import axios 
 
 ```
 async function loadGames (ID = '', search = '') { 
 ``` 
+
 I've created an async function called loadGames. 
 
 The function accepts the two parameters ID and search; by default, these parameters are empty/undefined until the user triggers the operation and searches for a specific game.  In the URL, the endpoint would look like this if the user searches for Mario: ?search=Mario 
 
-As for the ID its a unique identifier about each game; in our object, it includes the ratings, company, platform .. etc.
+As for the ID, its a unique identifier about each game; in our object, it includes the ratings, company, platform .. etc. 
 
 ```
  const { API_URL, API_TOKEN } = process.env 
 ```
+
 This creates two conts called API_URL and API_TOKEN. The way this const is built, it's a destructuring assignment that makes it possible to unpack values from arrays, or properties from objects, into distinct variables, which processes the env variables the shows the state of the system environment of our app.
 
 The code above is the same as below: 
@@ -161,21 +162,23 @@ if (ID)
         ID = `?id=${ID}`
 ```
 
-if the ID has information inside, we want to output in the endpoint as ?id=informationAboutGame
+If the ID has information inside, we want to output in the endpoint as ?id=informationAboutGame
 
-Our last if function is for Authorization and Errors
+Our last if function is for Authorization and Errors, this is how it works: 
 
 ```
  if (!URL || !TOKEN )  throw new Error('missing info') 
 ```
-if the URL and TOKEN is empty or Falsy terminate the process
 
-The alternative and safer way is to show a console error instead of terminating the process, we do this by: 
+if the URL and TOKEN is empty or Falsy (false value in a boolean context) it terminate the process 
 
 ```
 if (!API_URL || !API_TOKEN )  console.error('missing info')
 ```
-For the last function it calls the API_URL, search and ID shows the data if the user gave the right API_TOKEN
+
+The alternative and safer way is to show a console error instead of throw new error. 
+
+For our last function it checks if the user provides the right API_token, it's done by:
 
 ```
 const response = await axios(API_URL + search + ID, {
@@ -184,7 +187,8 @@ const response = await axios(API_URL + search + ID, {
     }}) 
 ```  
 
-Authorization of the token to show data 
+The API_URL, search and ID provides us with the information that the user added
+
 
 ```
 headers: {
@@ -192,20 +196,16 @@ headers: {
     }}) 
 ```
 
-Inside the async function loadGames we have a return 
+Then checks if the user gave the right API_TOKEN 
 
 ```
 return response.data
 ```
-This return shows the data of the api
+
+If the user provided the token correctly it returns with a response of our data
 
 ```
 export { loadGames }
 ```
+
 Lastly we have an export which exports the loadgames function, which can then be used in the index.js
-
-Keywords:
-env means environment variables - by env it won't be in our code 
-
-.gitignore file:
-git ignore file - doesn't commit specific files that you specify in this case it's the node_modules and .env
